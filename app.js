@@ -46,6 +46,30 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
+app.patch('/api/v1/tours/:id', (req, res) => {
+  // Check if ID valid (NOT Official)
+  if (req.params.id > tours.length)
+    res.status(404).json({ status: 'fail', message: 'Invalid ID' });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here>', // send updated tour
+    },
+  });
+});
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  // Check if ID valid (NOT Official)
+  if (req.params.id > tours.length)
+    res.status(404).json({ status: 'fail', message: 'Invalid ID' });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
