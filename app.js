@@ -6,6 +6,18 @@ const app = express();
 // KEYNOTE: use Middleware to read POST JSON data from Clients
 app.use(express.json());
 
+// KEYNOTE :(!!!ORDER matters) Create Middleware function to response request,Without specify Routing, it response to every request
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 😎 ');
+  // Call next() to complete cycle
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 //KEYNOTE Preload(synchronously->readFileSync()) JSON file into Javascript format with JSON.parse()
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
@@ -15,7 +27,12 @@ const tours = JSON.parse(
 const getAllTours = (req, res) => {
   res
     .status(200)
-    .json({ status: 'success', result: tours.length, data: { tours } });
+    .json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      result: tours.length,
+      data: { tours },
+    });
 };
 
 const getTour = (req, res) => {
@@ -79,6 +96,7 @@ const deleteTour = (req, res) => {
 
 // NOTE: specify v1 for later update to v2, client could still use v1
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
+
 // Respond to URL Parameters
 app
   .route('/api/v1/tours/:id')
