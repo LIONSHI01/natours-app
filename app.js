@@ -6,7 +6,10 @@ const userRouter = require('./routes/userRoutes.js');
 const app = express();
 
 // 1) MIDDLEWARE
-app.use(morgan('dev'));
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 // KEYNOTE: use Middleware to read POST JSON data from Clients
 app.use(express.json());
