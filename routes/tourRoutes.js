@@ -3,6 +3,8 @@ const fs = require('fs');
 const router = express.Router();
 const tourController = require('./../controllers/tourController');
 
+router.param('id', tourController.checkID);
+
 // NOTE: specify v1 for later update to v2, client could still use v1
 router
   .route('/')
