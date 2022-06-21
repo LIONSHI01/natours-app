@@ -11,23 +11,22 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
-// NOTE: specify v1 for later update to v2, client could still use v1
-app.get('/api/v1/tours', (req, res) => {
+/////////////ROUTING FUNCTION/////////////////
+const getAllTours = (req, res) => {
   res
     .status(200)
     .json({ status: 'success', result: tours.length, data: { tours } });
-});
+};
 
-// Respond to URL Parameters
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req, res) => {
   // NOTE: convert string to integer
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
   if (tour) res.status(200).json({ status: 'success', data: { tour } });
   if (!tour) res.status(404).json({ status: 'fail', message: 'Invalid ID' });
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req, res) => {
   // NOTE: newId: use the latest tour id + 1 (since some tour may be deleted, so total tour number != id number)
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
@@ -44,9 +43,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
   // Check if ID valid (NOT Official)
   if (req.params.id > tours.length)
     res.status(404).json({ status: 'fail', message: 'Invalid ID' });
@@ -57,9 +56,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: '<Updated tour here>', // send updated tour
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
   // Check if ID valid (NOT Official)
   if (req.params.id > tours.length)
     res.status(404).json({ status: 'fail', message: 'Invalid ID' });
@@ -68,7 +67,24 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null,
   });
-});
+};
+
+////////////////////////////////////////////////
+
+// app.get('/api/v1/tours', getAllTours);
+// app.post('/api/v1/tours', createTour);
+// app.get('/api/v1/tours/:id', getTour);
+// app.patch('/api/v1/tours/:id', updateTour);
+// app.delete('/api/v1/tours/:id', deleteTour);
+
+// NOTE: specify v1 for later update to v2, client could still use v1
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+// Respond to URL Parameters
+app
+  .route('/api/v1/tours/:id')
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 const port = 3000;
 app.listen(port, () => {
