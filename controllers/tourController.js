@@ -9,9 +9,42 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    // return an array of all records
-    const tours = await Tour.find();
+    console.log(req.query);
+    // BUILD QUERY
+    // 1A) Filtering
+    //KEYNOTE:Create hard copy of req.query object, otherwise, change of queryObj will affect req.query
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    // NOTE: delete queryObj Keys of ['page', 'sort', 'limit', 'fields'], so ignore these search keywords
+    excludedFields.forEach((el) => delete queryObj[el]);
 
+    // 1B) Advanced filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    // KEYNOTE: set up QUERY without AWAIT
+    let query = Tour.find(JSON.parse(queryStr));
+
+    // 2) Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt'); // default sort by time createdAt
+    }
+
+    // 3) Field limiting (return selected fields)
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v'); // Not return field __v
+    }
+
+    // EXECUTE QUERY
+    const tours = await query;
+
+    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       result: tours.length,
