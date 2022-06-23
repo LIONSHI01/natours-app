@@ -1,13 +1,6 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 
-//KEYNOTE Preload(synchronously->readFileSync()) JSON file into Javascript format with JSON.parse()
-
-// For testing
-// const tours = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-// );
-
 // Set a default Route for Top 5 cheap and high rating tours
 exports.aliasTopTours = (req, res, next) => {
   req.query.sort = '-ratingsAverage,price';
@@ -109,6 +102,47 @@ exports.deleteTour = async (req, res) => {
     res.status(204).json({
       status: 'success',
       data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' }, // _id must be stated , null = all data
+          numTours: { $sum: 1 }, //Calculate total number of tours, count 1 for each one
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 }, // 1 = Ascending, -1 = Descending
+      },
+      // {
+      //   $match: {
+      //     _id: { $ne: 'EASY' }, // Not equal to 'EASY'
+      //   },
+      // },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
     });
   } catch (err) {
     res.status(404).json({
