@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -7,6 +8,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a name'],
       unique: true,
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, 'A tour must have duration'],
@@ -51,6 +53,11 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(), // NOTE: give Timestamp
     },
     startDates: [Date], // NOTE: mongoDB will parse the date
+    secretTour: {
+      // set a secrete property
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true }, // Show virtual property in JSON
@@ -62,6 +69,37 @@ const tourSchema = new mongoose.Schema(
 // NOTE:the funcion in get() can't be arrow function ()=>{}, as we need [this.xx] keyword in the function
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+//DOCUMENT MIDDLEWARE:  run before .save() and .create()
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// tourSchema.post('save', function (doc, next) {
+//   console.log(doc);
+//   next();
+// });
+
+// QUERY MIDDLEWARE
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//   next();
+// });
+
+// AGGREGATION MIDDLEWARE
+// Purpose: exclude Secret tour from query
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline());
+  next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
