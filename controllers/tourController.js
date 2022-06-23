@@ -79,7 +79,7 @@ exports.updateTour = async (req, res) => {
   try {
     const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true, // return modified document
-      runValidators: true, // check if input data follow schema setting
+      runValidators: true, // NOTE: !!!check if input data follow schema setting
     });
 
     res.status(200).json({
