@@ -15,11 +15,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 
 // KEYNOTE :(!!!ORDER matters) Create Middleware function to response request,Without specify Routing, it response to every request
-app.use((req, res, next) => {
-  console.log('Hello from the middleware 😎 ');
-  // Call next() to complete cycle
-  next();
-});
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
@@ -27,7 +22,18 @@ app.use((req, res, next) => {
 });
 
 // 2) ROUTES
+// These are Middlewares
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+// Handling Unhandled routes
+// NOTE: Middleware follow orders, so this middleware place after tourRouter and userRouter, if any request reach here = not caught by tourRouter or userRouter, so is invalid request
+// '*' = all requests
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`, //originalUrl is property of req
+  });
+});
 
 module.exports = app;
