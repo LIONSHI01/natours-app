@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -30,10 +32,10 @@ app.use('/api/v1/users', userRouter);
 // NOTE: Middleware follow orders, so this middleware place after tourRouter and userRouter, if any request reach here = not caught by tourRouter or userRouter, so is invalid request
 // '*' = all requests
 app.all('*', (req, res, next) => {
-  res.status(404).json({
-    status: 'fail',
-    message: `Can't find ${req.originalUrl} on this server!`, //originalUrl is property of req
-  });
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404)); // anything in next() is error
 });
+
+// ERROR handling Middleware
+app.use(globalErrorHandler);
 
 module.exports = app;
