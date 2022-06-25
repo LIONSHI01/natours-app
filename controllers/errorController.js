@@ -12,6 +12,7 @@ const handleDouplicateFieldsDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
+  // FIXME
   const errors = Object.values(err.errors).map((el) => el.message);
 
   const message = `Invalid input data.${errors.join('. ')}`;
@@ -58,11 +59,17 @@ module.exports = (err, req, res, next) => {
   // For DEVELOPMENT: send ALL Error details
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
+    console.log(err);
 
     // For PRODUCTION: send Readable Error message to Clients
   } else if (process.env.NODE_ENV === 'production') {
-    let error = { ...err }; // Create copy of err, prevent mutate it
+    // KEYNOTE: Extract Error msg Object including its prototype constructors
+    // Use Object.assign to copy all enumerable own properties from err
+    let error = Object.assign(err); // Create copy of err, prevent mutate it
+
+    // Error caused by Invalid url(endpoint)
     if (error.name === 'CastError') error = handleCastErrorDB(error);
+    // Error coused by MongoDB : code = 11000
     if (error.code === 11000) error = handleDouplicateFieldsDB(error);
     if (error.name === 'ValidationError')
       error = handleValidationErrorDB(error);
