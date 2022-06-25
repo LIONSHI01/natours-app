@@ -1,6 +1,11 @@
 const express = require('express');
-const userController = require('./../controllers/userController');
+const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
+
 const router = express.Router();
+
+// Create a unique route to signup, since no need to get data from user info
+router.post('/signup', authController.signup);
 
 router.param('id', (req, res, next, val) => {
   console.log(`This is User id: ${val}`);
