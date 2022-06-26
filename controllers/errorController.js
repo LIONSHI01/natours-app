@@ -19,6 +19,9 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = (err) =>
+  new AppError('Invalid token. Please log in again!', 401);
+
 // ERROR TYPE 1: FOR DEVELOPMENT USE
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -50,7 +53,7 @@ const sendErrorProd = (err, res) => {
   }
 };
 
-// ERROR handling Middleware
+// globalErrorHandler Middleware
 module.exports = (err, req, res, next) => {
   // console.log(err.stack);
   err.statusCode = err.statusCode || 500; // if there is no err.statusCode then default as 500
@@ -73,6 +76,7 @@ module.exports = (err, req, res, next) => {
     if (error.code === 11000) error = handleDouplicateFieldsDB(error);
     if (error.name === 'ValidationError')
       error = handleValidationErrorDB(error);
+    if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
 
     sendErrorProd(error, res);
   }
