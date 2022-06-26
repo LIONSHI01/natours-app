@@ -6,6 +6,7 @@ const router = express.Router();
 
 // Create a unique route to signup, since no need to get data from user info
 router.post('/signup', authController.signup);
+router.post('/login', authController.login);
 
 router.param('id', (req, res, next, val) => {
   console.log(`This is User id: ${val}`);
