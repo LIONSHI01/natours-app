@@ -30,7 +30,9 @@ app.use('/api/v1/users', userRouter);
 
 // Handling Unhandled routes
 // NOTE: Middleware follow orders, so this middleware place after tourRouter and userRouter, if any request reach here = not caught by tourRouter or userRouter, so is invalid request
+
 // '*' = all requests
+// Placed after app.use('/api/v1/tours', tourRouter)& app.use('/api/v1/users', userRouter), so any route request not handled by these two ,handled by app.all(*)
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404)); // anything in next() is error
 });

@@ -10,6 +10,7 @@ process.on('uncaughtException', (err) => {
 });
 
 dotenv.config({ path: './config.env' });
+// NOTE: place below dotenv.config(), so read dotenv.config first
 const app = require('./app');
 
 const DB = process.env.DATABASE.replace(

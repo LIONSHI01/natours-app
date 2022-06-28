@@ -13,10 +13,12 @@ class APIFeatures {
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // 1B) Advanced filtering
+    // Convert queryObj from JSON to String, for laster replace (gte|gt|lte|lt) => ($gte|$gt|$lte|$lt)
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     // KEYNOTE: set up QUERY without AWAIT
+    // Convert queryStr from String to OBJECT for mongoose.prototype.find() use
     this.query = this.query.find(JSON.parse(queryStr));
 
     return this; // Return the entire Object
@@ -24,6 +26,7 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
+      // Convert queryString.sort => eg: 'price duration rating'
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
     } else {
