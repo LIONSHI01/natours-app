@@ -8,7 +8,8 @@ const router = express.Router();
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
-// router.post('/resetPassword', authController.resetPassword);
+// use router.patch for reset password as we update the password in database
+// router.patch('/resetPassword/:id', authController.resetPassword);
 
 router.param('id', (req, res, next, val) => {
   console.log(`This is User id: ${val}`);
