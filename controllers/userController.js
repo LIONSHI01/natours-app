@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
+// For updateMe Route, filter out unwanted fields
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
@@ -26,11 +27,7 @@ exports.getUser = (req, res) => {
     .status(500)
     .json({ status: 'error', message: 'This route is not yet defined' });
 };
-exports.createUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not yet defined' });
-};
+
 exports.updateUser = (req, res) => {
   res
     .status(500)
