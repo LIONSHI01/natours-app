@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date, //passwordResetToken will expire in short period
 });
 
-// KEYNOTE: Encrypt the password
+// KEYNOTE: Encrypt the password (NOTE: .update() NOT work!!)
 userSchema.pre('save', async function (next) {
   // NOTE: Only run this function if password was actually modified
   // if password not modified, no need to encrypt
@@ -64,7 +64,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// NOTE: Middleware to add passwordChangedAt property
+// NOTE: Middleware to add passwordChangedAt property (NOTE: .update() NOT work!!)
 userSchema.pre('save', function (next) {
   // if password is modified or user newly sign-up, pass this Middleware
   if (!this.isModified('password') || this.isNew) return next();

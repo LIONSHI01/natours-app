@@ -10,6 +10,11 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 // use router.patch for reset password as we update the password in database
 router.patch('/resetPassword/:token', authController.resetPassword);
+router.patch(
+  '/updateMyPassword',
+  authController.protect,
+  authController.updatePassword
+);
 
 router.param('id', (req, res, next, val) => {
   console.log(`This is User id: ${val}`);
