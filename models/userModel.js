@@ -64,6 +64,15 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// NOTE: Middleware to add passwordChangedAt property
+userSchema.pre('save', function (next) {
+  // if password is modified or user newly sign-up, pass this Middleware
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000; // Prevent Password encryption takes too long time that later then the passwordChangedAt time
+  next();
+});
+
 // Create Instance method, so can be used everywhere with User.correctPassword
 userSchema.methods.correctPassword = async function (
   candidatePassword,
