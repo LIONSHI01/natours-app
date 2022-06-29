@@ -23,8 +23,8 @@ router
   .get(tourController.getTour) //let authenticated user access this route
   .patch(tourController.updateTour)
   .delete(
-    authController.protect,
-    authController.restrictTo('admin', 'lead-guide'),
+    authController.protect, //Check user login
+    authController.restrictTo('admin', 'lead-guide'), //Check user accessibility
     tourController.deleteTour
   );
 

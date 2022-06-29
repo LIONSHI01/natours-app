@@ -43,12 +43,14 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 2) Check if user exists && password is correct
-  const user = await User.findOne({ email }).select('+password'); // select 'password' which is hidden by default so need add '+'
+
+  const user = await User.findOne({ email }).select('+password'); // select 'password' which is hidden by default, retrieved user here has no password property,  so need add '+' to select password here
+  // Check if password correct
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('Incorrect email or pasord', 401));
+    return next(new AppError('Incorrect email or password', 401));
   }
 
-  // 3) If everthing ok , send token to client
+  // 3) If everthing ok , send Asscess token to client
   const token = signToken(user._id);
   res.status(200).json({
     status: 'success',
@@ -77,7 +79,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   // KEYNOTE: Promisify the jwt.verify() function so make it asynchronouns
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  // console.log(decoded);
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
@@ -99,7 +100,9 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// NOTE: Create a function between MIDDLEWARE functions
 exports.restrictTo = (...roles) => {
+  // NOTE: Return a new MIDDLEWARE function ,so not breaking the middleware chain
   return (req, res, next) => {
     // (...roles) is an array,eg: ['admin','lead-guide']
     // check if the roles array exist in req.user.role

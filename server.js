@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-// To caught any exception error before running the code
+// To caught any Uncqught exceptio(synchronous code)n error before running the code
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION,🥶, Shutting down...');
   console.log(err.name, err.message);
@@ -33,11 +33,11 @@ const server = app.listen(port, () => {
   console.log(`App running on port ${port}`);
 });
 
-// Catch unhandled Promise Rejection GLOBALLY!! Final safe net.
+// Catch unhandled Promise Rejection(Asynchronous Code) GLOBALLY / Outside Express !! Final safy-net.
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION,🥶, Shutting down...');
   console.log(err.name, err.message);
-  // Close the server first then the app, so let the server process all remaining requests in real world
+  // Close the server first then the app, so let the server process all remaining requests (real world way)
   server.close(() => {
     process.exit(1); // 1 = Uncaught Exception , 0 = Success
   });

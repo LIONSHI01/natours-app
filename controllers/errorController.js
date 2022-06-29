@@ -12,6 +12,7 @@ const handleDouplicateFieldsDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
+  // Convert Object err into array for .map()
   const errors = Object.values(err.errors).map((el) => el.message);
 
   const message = `Invalid input data.${errors.join('. ')}`;
