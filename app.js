@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const AppError = require('./utils/appError');
@@ -33,6 +35,10 @@ app.use('/api', limiter); // apply limiter to URL start with '/api'
 // KEYNOTE: use Middleware to read POST JSON data from Clients
 app.use(express.json({ limit: '10kb' })); //Limit to parse 10kb data from body
 
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize()); //Romove $ sign
+// Data sanitization against XSS
+app.use(xss()); // Remove malicious HTML code
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
 
