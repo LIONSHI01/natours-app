@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const AppError = require('./utils/appError');
@@ -39,6 +40,19 @@ app.use(express.json({ limit: '10kb' })); //Limit to parse 10kb data from body
 app.use(mongoSanitize()); //Romove $ sign
 // Data sanitization against XSS
 app.use(xss()); // Remove malicious HTML code
+// Prevent Parameters Polution: remove duplicate fields
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsAverage',
+      'ratingsQuantity',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  })
+);
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
 
