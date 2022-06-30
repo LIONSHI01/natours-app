@@ -104,7 +104,14 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: Array,
+    // guides: Array,
+    // For Reference Database
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User', // From User collection
+      },
+    ],
   },
   {
     toJSON: { virtuals: true }, // Show virtual property in JSON
@@ -140,6 +147,15 @@ tourSchema.pre('save', async function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+// Populate the tourSchema for query start with find
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt', //Not show these fields in Output
+  });
   next();
 });
 
