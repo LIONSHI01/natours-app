@@ -22,10 +22,8 @@ router.param('id', (req, res, next, val) => {
   next();
 });
 
-router
-  .route('/')
-  .get(userController.getAllUsers)
-  .post(userController.createUser);
+router.route('/').get(userController.getAllUsers);
+
 router
   .route('/:id')
   .get(userController.getUser)
