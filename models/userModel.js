@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date, //passwordResetToken will expire in short period
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 // KEYNOTE: Encrypt the password (NOTE: .update() NOT work!!)
@@ -70,6 +75,13 @@ userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000; // Prevent Password encryption takes too long time that later then the passwordChangedAt time
+  next();
+});
+
+// NOTE:Query Middleware, for all query start with 'find', only return {active:not equal to false}(in case some early user data dont have 'active' property)
+userSchema.pre('/^find/', function (next) {
+  // this point to the current query
+  this.find({ active: { $ne: false } });
   next();
 });
 
