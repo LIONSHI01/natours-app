@@ -125,6 +125,14 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// KEYNOTE:Virtual Populate
+// In this case, only call Population in Get one tour not all, coz it return too much info to client if populate in all tours
+tourSchema.virtual('reviews', {
+  ref: 'Review', //Reference Schema
+  foreignField: 'tour', // Tour's corresponding field in 'Review'
+  localField: '_id', //Tour's corresponding field in 'Tour'
+});
+
 //DOCUMENT MIDDLEWARE:  run before .save() and .create(), but not .update()
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
