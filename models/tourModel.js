@@ -114,8 +114,8 @@ const tourSchema = new mongoose.Schema(
     ],
   },
   {
-    toJSON: { virtuals: true }, // Show virtual property in JSON
-    toObject: { virtuals: true }, // Show virtual property in Object
+    toJSON: { virtuals: true }, // Show virtual property in JSON when we don't save it in database
+    toObject: { virtuals: true }, // Show virtual property in Object when we don't save it in database
   }
 );
 
@@ -131,12 +131,13 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-tourSchema.pre('save', async function (next) {
-  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
-  this.guides = await Promise.all(guidesPromises);
+// Another way to populate Guides(但不能更新即時資料)
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
 
-  next();
-});
+//   next();
+// });
 
 // tourSchema.post('save', function (doc, next) {
 //   console.log(doc);
