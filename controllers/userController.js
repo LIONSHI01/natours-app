@@ -23,17 +23,17 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not yet defined' });
+exports.createUser = (req, res, next) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not defined, please use signup instead!',
+  });
 };
 
-exports.updateUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not yet defined' });
-};
+exports.getUser = factory.getOne(User);
+// Dot NOT update password with this
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
 
 // Update name and email
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -69,5 +69,3 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
-exports.deleteUser = factory.deleteOne(User);

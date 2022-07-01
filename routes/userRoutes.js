@@ -20,8 +20,6 @@ router.patch('/updateMe', authController.protect, userController.updateMe);
 
 router.delete('/deleteMe', authController.protect, userController.deleteMe);
 
-router.route('/:id').delete(userController.deleteUser);
-
 router.param('id', (req, res, next, val) => {
   console.log(`This is User id: ${val}`);
   next();
@@ -32,6 +30,7 @@ router.route('/').get(userController.getAllUsers);
 router
   .route('/:id')
   .get(userController.getUser)
-  .patch(userController.updateUser);
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 module.exports = router;
