@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
+const reviewController = require('../controllers/reviewController');
 
 // NOTE: specify v1 for later update to v2, client could still use v1
 router
@@ -26,6 +27,14 @@ router
     authController.protect, //Check user login
     authController.restrictTo('admin', 'lead-guide'), //Check user accessibility
     tourController.deleteTour
+  );
+
+router
+  .route('/:tourId/reviews')
+  .post(
+    authController.protect,
+    authController.restrictTo('user'),
+    reviewController.createReview
   );
 
 module.exports = router;
