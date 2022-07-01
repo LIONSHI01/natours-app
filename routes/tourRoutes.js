@@ -3,10 +3,10 @@ const express = require('express');
 const router = express.Router();
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
-const reviewRouter = require('../routes/reviewRoutes');
+const reviewRouter = require('./reviewRoutes');
 
-// Merge with reveiwRouter
-router.use('/:tokenId/reviews', reviewRouter);
+// Merge with reveiwRouter, redirect request to reviewRouter
+router.use('/:tourId/reviews', reviewRouter);
 
 // NOTE: specify v1 for later update to v2, client could still use v1
 router
@@ -31,13 +31,5 @@ router
     authController.restrictTo('admin', 'lead-guide'), //Check user accessibility
     tourController.deleteTour
   );
-
-// router
-//   .route('/:tourId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restrictTo('user'),
-//     reviewController.createReview
-//   );
 
 module.exports = router;
