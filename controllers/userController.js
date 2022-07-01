@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-
+const factory = require('./handlerFactory');
 // For updateMe Route, filter out unwanted fields
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -16,6 +16,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
+    results: users.length,
     data: {
       users,
     },
@@ -68,3 +69,5 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.deleteUser = factory.deleteOne(User);
