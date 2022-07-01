@@ -11,17 +11,11 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+// Dot NOT update password with this
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
 
 exports.createUser = (req, res, next) => {
   res.status(500).json({
@@ -29,11 +23,6 @@ exports.createUser = (req, res, next) => {
     message: 'This route is not defined, please use signup instead!',
   });
 };
-
-exports.getUser = factory.getOne(User);
-// Dot NOT update password with this
-exports.updateUser = factory.updateOne(User);
-exports.deleteUser = factory.deleteOne(User);
 
 // Update name and email
 exports.updateMe = catchAsync(async (req, res, next) => {
