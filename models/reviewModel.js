@@ -69,10 +69,18 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   ]);
 
   // Update Tour data
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating,
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    // if no stats, means no reviews found, so return default values
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
 };
 
 // Call the Aggregation Pipeline after new reviews saved
@@ -81,6 +89,20 @@ reviewSchema.post('save', function () {
   // this points to current review
   // NOTE: this.constructor = Review , coz 'this' point to the current review instance, its constructor is Review
   this.constructor.calcAverageRatings(this.tour); // put in current review's tourId
+});
+
+// KEYNOTE: Calculate avgRating after reviews are updated or deleted
+// 1) Get the tourID via .pre query (Can't get tourID after query execution)
+// NOTE: Regrex find .findOneAndUpdate/ .findOneAndDelete orders
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne(); //.findOne is a function of Model, here is to retrieve current Document from database
+  next();
+});
+
+// 2) Save the calculation results after query
+reviewSchema.post(/^findOneAnd/, async function (next) {
+  // await this.findOne() does NOT work here, query has already executed
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
