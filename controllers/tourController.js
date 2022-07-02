@@ -148,7 +148,7 @@ exports.getDistances = catchAsync(async (req, res, next) => {
           type: 'Point',
           coordinates: [lng * 1, lat * 1],
         },
-        distanceField: 'distance',
+        distanceField: 'distance', // Name of the field to be saved as
         distanceMultiplier: multiplier, // convert distance from meter to kilometer
       },
     },

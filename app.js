@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -13,7 +14,13 @@ const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
+// KEYNOTE: Set up Render Engine
+app.set('view engine', 'pug');
+app.set('veiws', path.join(__dirname, 'views')); // use path Library for better document directory
+
 // 1) GLOBAL MIDDLEWARE
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 // KEYNOTE :(!!!ORDER matters) Create Middleware function to response request,Without specify Routing, it response to every request
 
 // Set Security HTTP headers
@@ -54,8 +61,6 @@ app.use(
     ],
   })
 );
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
 
 // Test middleware
 app.use((req, res, next) => {
@@ -65,6 +70,9 @@ app.use((req, res, next) => {
 
 // 2) ROUTES
 // These are Middlewares
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
