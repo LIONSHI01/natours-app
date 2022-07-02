@@ -24,6 +24,11 @@ exports.createUser = (req, res, next) => {
   });
 };
 
+exports.getMe = catchAsync(async (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+});
+
 // Update name and email
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POST password data
