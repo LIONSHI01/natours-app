@@ -10,29 +10,22 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 // use router.patch for reset password as we update the password in database
 router.patch('/resetPassword/:token', authController.resetPassword);
-router.patch(
-  '/updateMyPassword',
-  authController.protect,
-  authController.updatePassword
-);
 
-router.get(
-  '/me',
-  authController.protect,
-  userController.getMe,
-  userController.getUser
-);
+//NOTE:As MIDDLEWARE run in sequence, so place authController.protect ALL routes after this MIDDLEWARE
+router.use(authController.protect);
 
-router.patch('/updateMe', authController.protect, userController.updateMe);
+router.patch('/updateMyPassword', authController.updatePassword);
+router.get('/me', userController.getMe, userController.getUser);
+router.patch('/updateMe', userController.updateMe);
+router.delete('/deleteMe', userController.deleteMe);
 
-router.delete('/deleteMe', authController.protect, userController.deleteMe);
+// NOTE: ONLY admin could access below routes
+router.use(authController.restrictTo('admin'));
 
-router.param('id', (req, res, next, val) => {
-  console.log(`This is User id: ${val}`);
-  next();
-});
-
-router.route('/').get(userController.getAllUsers);
+router
+  .route('/')
+  .get(userController.getAllUsers)
+  .post(userController.createUser);
 
 router
   .route('/:id')

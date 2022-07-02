@@ -14,18 +14,30 @@ router
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
-router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+router.route('/monthly-plan/:year').get(
+  authController.protect, //Check user login
+  authController.restrictTo('admin', 'lead-guide', 'guide'),
+  tourController.getMonthlyPlan
+);
 
 router
   .route('/')
-  .get(authController.protect, tourController.getAllTours)
-  .post(tourController.createTour);
+  .get(tourController.getAllTours)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createTour
+  );
 
-// Respond to URL Parameters
+// Respond to URL Parameters, can name it as :id, :token,etc
 router
   .route('/:id')
   .get(tourController.getTour) //let authenticated user access this route
-  .patch(tourController.updateTour)
+  .patch(
+    authController.protect, //Check user login
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.updateTour
+  )
   .delete(
     authController.protect, //Check user login
     authController.restrictTo('admin', 'lead-guide'), //Check user accessibility
