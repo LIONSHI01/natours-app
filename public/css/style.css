@@ -845,6 +845,7 @@ body {
   color: #55c57a;
 }
 .footer__copyright {
+  display: block;
   justify-self: end;
   color: #999;
 }
