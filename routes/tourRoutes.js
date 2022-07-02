@@ -21,6 +21,10 @@ router.route('/monthly-plan/:year').get(
 );
 
 router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.gettoursWithin);
+
+router
   .route('/')
   .get(tourController.getAllTours)
   .post(

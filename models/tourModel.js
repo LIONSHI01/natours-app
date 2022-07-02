@@ -125,6 +125,7 @@ const tourSchema = new mongoose.Schema(
 // NOTE: Compound Index(Combination of fields)
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // KEYNOTE: Create VIRTUAL PROPERTY (Not part of the data, Can't be used for query )
 // NOTE:the funcion in get() can't be arrow function ()=>{}, as we need [this.xx] keyword in the function

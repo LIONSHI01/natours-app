@@ -35,6 +35,7 @@ const reviewSchema = new mongoose.Schema(
 );
 
 // KEYNOTE: Set Compound index to prevent DUPLICATE reviews from same user on a tour
+// BUG: Try this function later
 reviewSchema.index({ user: 1, tour: 1 }, { unique: true });
 
 // Populate fields
