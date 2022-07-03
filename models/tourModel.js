@@ -142,6 +142,7 @@ tourSchema.virtual('reviews', {
 });
 
 //DOCUMENT MIDDLEWARE:  run before .save() and .create(), but not .update()
+// Create URL slug for later URL directory in PUG templete
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
