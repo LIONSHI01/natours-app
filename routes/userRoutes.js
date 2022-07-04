@@ -7,6 +7,7 @@ const router = express.Router();
 // Create a unique route to signup, since no need to get data from user info
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.get('/logout', authController.logout); //get dummy cookie
 router.post('/forgotPassword', authController.forgotPassword);
 // use router.patch for reset password as we update the password in database
 router.patch('/resetPassword/:token', authController.resetPassword);
