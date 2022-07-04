@@ -25,7 +25,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // KEYNOTE :(!!!ORDER matters) Create Middleware function to response request,Without specify Routing, it response to every request
 
 // Set Security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        'child-src': ['blob:'],
+        'connect-src': ['https://*.mapbox.com'],
+        'default-src': ["'self'"],
+        'font-src': ["'self'", 'https://fonts.gstatic.com'],
+        'img-src': ["'self'", 'data:', 'blob:'],
+        'script-src': ["'self'", 'https://*.mapbox.com'],
+        'style-src': ["'self'", 'https:'],
+        'worker-src': ['blob:'],
+      },
+    },
+  })
+);
 
 // Development logging
 console.log(process.env.NODE_ENV);
