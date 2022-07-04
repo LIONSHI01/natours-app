@@ -6,6 +6,8 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
@@ -60,6 +62,8 @@ app.use('/api', limiter); // apply limiter to URL start with '/api'
 // Body parser, reading data from body into req.body
 // KEYNOTE: use Middleware to read POST JSON data from Clients
 app.use(express.json({ limit: '10kb' })); //Limit to parse 10kb data from body
+// KEYNOTE: Parse data from cookies of Client side
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize()); //Romove $ sign
@@ -82,6 +86,7 @@ app.use(
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
   next();
 });
 
