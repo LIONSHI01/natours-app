@@ -88,7 +88,6 @@ app.use((req, res, next) => {
 // 2) ROUTES
 // These are Middlewares
 app.use('/', viewRouter);
-// app.use('/tours', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
