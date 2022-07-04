@@ -119,6 +119,35 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// NOTE: Function to check if the user is logged-in, only for Render pages
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  // 1) Check if there is a cookie called jwt
+  if (req.cookies.jwt) {
+    // Read Client cookies to check Authentication
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET
+    );
+
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+
+    // 3) Check if user changed password after token was issued
+    // decoded.iat = token issued at (timestamp)
+    if (currentUser.changedPasswordAfter(decoded.iat)) return next();
+
+    // There is a Logged in user
+    // KEYNOTE: Put currentUser to the res.locals
+    res.locals.user = currentUser;
+
+    return next();
+  }
+  next(); //if there is no Cookies.jwt, pass to next middleware directly
+});
+
 // NOTE: Create a function between MIDDLEWARE functions
 exports.restrictTo = (...roles) => {
   // NOTE: Return a new MIDDLEWARE function ,so not breaking the middleware chain
