@@ -1,14 +1,14 @@
 /* eslint-disable*/
-console.log('hello from the client side');
+
 // Since locations data are stored in MongoDB, so cannot import to this file directly, so export location data to HTML and retrieve from HTML
 const locations = JSON.parse(document.getElementById('map').dataset.locations);
-console.log(locations);
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoibXJsaW9uOTEiLCJhIjoiY2w1NWVzaW1yMTQwYzNpbjU2ejVoNW8wMCJ9.FCdfywynoFEVQU3KwzXoZg';
 var map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mrlion91/cl561w442000014o69o3vz9sv',
+  scrollZoom: false,
 });
 
 const bounds = new mapboxgl.LngLatBounds();
@@ -25,6 +25,14 @@ locations.forEach((loc) => {
     .setLngLat(loc.coordinates)
     .addTo(map);
 
+  // Add Popup
+  new mapboxgl.Popup({
+    offset: 30,
+  })
+    .setLngLat(loc.coordinates)
+    .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+    .addTo(map);
+
   // Extend map bounds to include current location
   bounds.extend(loc.coordinates);
 });
@@ -32,7 +40,7 @@ locations.forEach((loc) => {
 map.fitBounds(bounds, {
   padding: {
     top: 200,
-    bottom: 200,
+    bottom: 150,
     left: 100,
     right: 200,
   },
