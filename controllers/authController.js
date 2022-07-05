@@ -124,6 +124,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // GRANT ACCESS TO PROTECTED ROUTE
   // req.user travel from middleware to middleware, so assign currentUser to req.user for next middleware function
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 
