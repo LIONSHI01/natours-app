@@ -41,13 +41,22 @@ if (updateUserForm) {
 }
 
 if (updateUserPasswordForm) {
-  updateUserPasswordForm.addEventListener('submit', (e) => {
+  updateUserPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    document.querySelector('.btn--save--password').textContent = 'Updating...';
+
     const passwordCurrent = document.getElementById('password-current').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
 
-    updateUserPassword(passwordCurrent, password, passwordConfirm);
+    await updateUserPassword(passwordCurrent, password, passwordConfirm);
+
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
+    // NOTE: since we use await for updateUserPassword(), so codes below will be run after Promise finish
+    document.querySelector('.btn--save--password').textContent =
+      'save password';
   });
 }
 
