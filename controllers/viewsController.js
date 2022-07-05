@@ -48,25 +48,25 @@ exports.getLoginForm = (req, res) => {
 
 exports.getAccount = catchAsync(async (req, res) => {
   const user = await User.findById(req.user.id);
-  res.status(200).render('account02', {
-    title: 'Your account02',
+  res.status(200).render('account', {
+    title: 'Your account',
     user,
   });
 });
 
-exports.updateUserData = catchAsync(async (req, res, next) => {
-  // const { name, email } = req.body;
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user.id,
-    { name: req.body.name, email: req.body.email },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+// exports.updateUserData = catchAsync(async (req, res, next) => {
+//   // const { name, email } = req.body;
+//   const updatedUser = await User.findByIdAndUpdate(
+//     req.user.id,
+//     { name: req.body.name, email: req.body.email },
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
 
-  res.status(200).render('account02', {
-    title: 'Your account02',
-    user: updatedUser,
-  });
-});
+//   res.status(200).render('account02', {
+//     title: 'Your account02',
+//     user: updatedUser,
+//   });
+// });
