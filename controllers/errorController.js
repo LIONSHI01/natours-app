@@ -26,34 +26,60 @@ const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
 // ERROR TYPE 1: FOR DEVELOPMENT USE
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message, // send full ERROR message to developer to solve
-    stack: err.stack,
+const sendErrorDev = (err, req, res) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message, // send full ERROR message to developer to solve
+      stack: err.stack,
+    });
+  }
+  // B) NOTE:RENDERED WEBSITE
+
+  console.error('ERROR 🥶', err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message,
   });
 };
 
 // ERROR TYPE 2: FOR PRODUCTION USE
-const sendErrorProd = (err, res) => {
-  // Operational, trusted error: send message to client
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-  } else {
+const sendErrorProd = (err, req, res) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send message to client
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
     // Programming or other unknown error: dont't leak error details to client
     // 1) Log error
     console.error('ERROR 🥶', err);
 
     // 2) Send general message
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: 'Somthing went very wrong!',
     });
   }
+  // B) RENDERED WEBSITE
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: err.message,
+    });
+  }
+
+  console.error('ERROR 🥶', err);
+  // Return simple error msg for UNKNOWN error
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.',
+  });
 };
 
 // globalErrorHandler Middleware
@@ -64,7 +90,7 @@ module.exports = (err, req, res, next) => {
 
   // For DEVELOPMENT: send ALL Error details
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
     console.log(err);
 
     // For PRODUCTION: send Readable Error message to Clients
@@ -82,6 +108,6 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
