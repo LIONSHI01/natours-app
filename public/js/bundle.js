@@ -11545,7 +11545,7 @@ var _mapbox = require("./mapbox.js");
 
 // DOM ELEMENTS
 var mapBox = document.getElementById('map');
-var loginForm = document.querySelector('.form');
+var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout'); // DELEGATION (Prevent error when in pages without Map)
 
 if (mapBox) {
@@ -11592,7 +11592,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58356" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60748" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
