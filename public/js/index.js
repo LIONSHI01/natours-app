@@ -5,6 +5,7 @@ import { logout } from './login';
 import { displayMap } from './mapbox.js';
 import { updateData } from './updateSetting';
 import { updateUserPassword } from './updateSetting';
+import { updateSetting } from './updateSetting';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
@@ -32,11 +33,12 @@ if (loginForm) {
 if (updateUserForm) {
   updateUserForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-
-    updateData(name, email);
+    const form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    console.log(form);
+    updateSetting(form, 'data');
   });
 }
 
@@ -49,7 +51,10 @@ if (updateUserPasswordForm) {
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
 
-    await updateUserPassword(passwordCurrent, password, passwordConfirm);
+    await updateSetting(
+      { passwordCurrent, password, passwordConfirm },
+      'password'
+    );
 
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';

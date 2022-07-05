@@ -11278,7 +11278,7 @@ exports.displayMap = displayMap;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateUserPassword = exports.updateData = void 0;
+exports.updateUserPassword = exports.updateSetting = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -11294,8 +11294,25 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var updateData = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(name, email) {
+// export const updateData = async (name, email) => {
+//   try {
+//     const result = await axios({
+//       method: 'PATCH',
+//       url: 'http://127.0.0.1:8000/api/v1/users/updateMe',
+//       data: {
+//         name,
+//         email,
+//       },
+//     });
+//     if (result.data.status === 'success') {
+//       showAlert('success', 'User info updated successfully!');
+//     }
+//   } catch (err) {
+//     showAlert('error', err.response.data.message);
+//   }
+// };
+var updateUserPassword = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(passwordCurrent, password, passwordConfirm) {
     var result;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
@@ -11305,10 +11322,11 @@ var updateData = /*#__PURE__*/function () {
             _context.next = 3;
             return (0, _axios.default)({
               method: 'PATCH',
-              url: 'http://127.0.0.1:8000/api/v1/users/updateMe',
+              url: 'http://127.0.0.1:8000/api/v1/users/updateMyPassword',
               data: {
-                name: name,
-                email: email
+                passwordCurrent: passwordCurrent,
+                password: password,
+                passwordConfirm: passwordConfirm
               }
             });
 
@@ -11316,7 +11334,7 @@ var updateData = /*#__PURE__*/function () {
             result = _context.sent;
 
             if (result.data.status === 'success') {
-              (0, _alerts.showAlert)('success', 'User info updated successfully!');
+              (0, _alerts.showAlert)('success', 'Password updated successfully!');
             }
 
             _context.next = 10;
@@ -11335,80 +11353,59 @@ var updateData = /*#__PURE__*/function () {
     }, _callee, null, [[0, 7]]);
   }));
 
-  return function updateData(_x, _x2) {
+  return function updateUserPassword(_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
-}();
+}(); // ALTERNATIVE METHOD
 
-exports.updateData = updateData;
 
-var updateUserPassword = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(passwordCurrent, password, passwordConfirm) {
-    var result;
+exports.updateUserPassword = updateUserPassword;
+
+var updateSetting = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(data, type) {
+    var url, res;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
-            _context2.next = 3;
+            url = type === 'password' ? 'http://127.0.0.1:8000/api/v1/users/updateMyPassword' : 'http://127.0.0.1:8000/api/v1/users/updateMe';
+            _context2.next = 4;
             return (0, _axios.default)({
               method: 'PATCH',
-              url: 'http://127.0.0.1:8000/api/v1/users/updateMyPassword',
-              data: {
-                passwordCurrent: passwordCurrent,
-                password: password,
-                passwordConfirm: passwordConfirm
-              }
+              url: url,
+              data: data
             });
 
-          case 3:
-            result = _context2.sent;
+          case 4:
+            res = _context2.sent;
 
-            if (result.data.status === 'success') {
-              (0, _alerts.showAlert)('success', 'Password updated successfully!');
+            if (res.data.status === 'success') {
+              (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " updated successfully!"));
             }
 
-            _context2.next = 10;
+            _context2.next = 11;
             break;
 
-          case 7:
-            _context2.prev = 7;
+          case 8:
+            _context2.prev = 8;
             _context2.t0 = _context2["catch"](0);
             (0, _alerts.showAlert)('error', _context2.t0.response.data.message);
 
-          case 10:
+          case 11:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 7]]);
+    }, _callee2, null, [[0, 8]]);
   }));
 
-  return function updateUserPassword(_x3, _x4, _x5) {
+  return function updateSetting(_x4, _x5) {
     return _ref2.apply(this, arguments);
   };
-}(); // ALTERNATIVE METHOD
-// export const updateSetting = async (data, type) => {
-//   try {
-//     const url =
-//       type === 'password'
-//         ? 'http://127.0.0.1:8000/api/v1/users/updateMyPassword'
-//         : 'http://127.0.0.1:8000/api/v1/users/updateMe';
-//     const res = await axios({
-//       method: 'PATCH',
-//       url,
-//       data,
-//     });
-//     if (res.data.status === 'success') {
-//       showAlert('success', 'Password updated successfully!');
-//     }
-//   } catch (err) {
-//     showAlert('error', err.response.data.message);
-//   }
-// };
+}();
 
-
-exports.updateUserPassword = updateUserPassword;
+exports.updateSetting = updateSetting;
 },{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -11715,9 +11712,12 @@ if (loginForm) {
 if (updateUserForm) {
   updateUserForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = document.getElementById('name').value;
-    var email = document.getElementById('email').value;
-    (0, _updateSetting.updateData)(name, email);
+    var form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    console.log(form);
+    (0, _updateSetting.updateSetting)(form, 'data');
   });
 }
 
@@ -11735,7 +11735,11 @@ if (updateUserPasswordForm) {
               password = document.getElementById('password').value;
               passwordConfirm = document.getElementById('password-confirm').value;
               _context.next = 7;
-              return (0, _updateSetting.updateUserPassword)(passwordCurrent, password, passwordConfirm);
+              return (0, _updateSetting.updateSetting)({
+                passwordCurrent: passwordCurrent,
+                password: password,
+                passwordConfirm: passwordConfirm
+              }, 'password');
 
             case 7:
               document.getElementById('password-current').value = '';
@@ -11787,7 +11791,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61811" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64874" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

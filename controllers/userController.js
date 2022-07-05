@@ -6,6 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
 
 // KEYNOTE: set up uploader as MIDDLEWARE
+// NOTE: A) For NOT using image processing
 // const multerStorage = multer.diskStorage({
 //   destination: (req, file, cb) => {
 //     cb(null, 'public/img/users');
@@ -17,7 +18,7 @@ const factory = require('./handlerFactory');
 //   },
 // });
 
-// Store image in memory buffer
+// NOTE: B) For image processing, Store image in memory buffer
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
