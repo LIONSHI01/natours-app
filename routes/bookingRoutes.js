@@ -4,7 +4,7 @@ const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
 router.get(
-  '/chekcout-session/:tourId',
+  '/checkout-session/:tourId',
   authController.protect,
   bookingController.getCheckoutSession
 );

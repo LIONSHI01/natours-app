@@ -5,6 +5,7 @@ import { login } from './login';
 import { logout } from './login';
 import { displayMap } from './mapbox.js';
 import { updateSetting } from './updateSetting';
+import { bookTour } from './stripe';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
@@ -12,6 +13,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const updateUserForm = document.querySelector('.form-user-data');
 const updateUserPasswordForm = document.querySelector('.form-user-settings');
+const bookTourBtn = document.getElementById('book-tour');
 
 // DELEGATION (Prevent error when in pages without Map)
 if (mapBox) {
@@ -61,6 +63,14 @@ if (updateUserPasswordForm) {
     // NOTE: since we use await for updateUserPassword(), so codes below will be run after Promise finish
     document.querySelector('.btn--save--password').textContent =
       'save password';
+  });
+}
+
+if (bookTourBtn) {
+  bookTourBtn.addEventListener('click', async (e) => {
+    bookTourBtn.textContent = 'processing...';
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
   });
 }
 
