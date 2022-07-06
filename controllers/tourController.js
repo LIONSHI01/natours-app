@@ -28,10 +28,41 @@ exports.uploadTourImages = upload.fields([
 ]);
 
 // B) Middleware to RESIZE images
-exports.resizeTourImages = (req, res, next) => {
-  console.log(req.files);
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
+  // console.log(req.files);
+  if (!req.files.imageCover || !req.files.images) return next();
+
+  // 1) Process Cover image
+
+  // Store new imageCover file name in req.body for later save
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333) // 3:2 image ratio
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`);
+
+  // 2) Process Imags
+  // KEYNOTE: async in forEach loop CANNOT stop middleware process to next(), so use Promise.all to group all the promise from the loop, then the function wait all promise finish to go for next()
+
+  // Create req.body.images Array for later save
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+
+      await sharp(file.buffer)
+        .resize(2000, 1333) // 3:2 image ratio
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
+
   next();
-};
+});
 
 // Set a default Route for Top 5 cheap and high rating tours
 exports.aliasTopTours = (req, res, next) => {
