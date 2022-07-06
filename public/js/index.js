@@ -1,10 +1,9 @@
 /* eslint-disable */
 import '@babel/polyfill';
+
 import { login } from './login';
 import { logout } from './login';
 import { displayMap } from './mapbox.js';
-import { updateData } from './updateSetting';
-import { updateUserPassword } from './updateSetting';
 import { updateSetting } from './updateSetting';
 
 // DOM ELEMENTS
@@ -37,7 +36,7 @@ if (updateUserForm) {
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log(form);
+
     updateSetting(form, 'data');
   });
 }
