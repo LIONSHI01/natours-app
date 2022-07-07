@@ -11428,44 +11428,43 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var stripe = Stripe('pk_test_51LITmxBZgGpVkrfsw13e7nP307dT9ctZMAJjGgGLpHSmY37qBELpolcA5Cm9sdrC5jiefJOfRHuwnPrii4lcjHG200yYTKL00v');
-
 var bookTour = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(tourId) {
-    var session;
+    var stripe, session;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
-            _context.next = 3;
+            stripe = Stripe('pk_test_51LITmxBZgGpVkrfsw13e7nP307dT9ctZMAJjGgGLpHSmY37qBELpolcA5Cm9sdrC5jiefJOfRHuwnPrii4lcjHG200yYTKL00v');
+            _context.prev = 1;
+            _context.next = 4;
             return (0, _axios.default)("http://127.0.0.1:8000/api/v1/booking/checkout-session/".concat(tourId));
 
-          case 3:
+          case 4:
             session = _context.sent;
             console.log(session); // 2) Create checkout form + charge credit card
 
-            _context.next = 7;
+            _context.next = 8;
             return stripe.redirectToCheckout({
               sessionId: session.data.session.id
             });
 
-          case 7:
-            _context.next = 13;
+          case 8:
+            _context.next = 14;
             break;
 
-          case 9:
-            _context.prev = 9;
-            _context.t0 = _context["catch"](0);
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context["catch"](1);
             console.log(_context.t0);
             (0, _alerts.showAlert)('error', _context.t0);
 
-          case 13:
+          case 14:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 9]]);
+    }, _callee, null, [[1, 10]]);
   }));
 
   return function bookTour(_x) {
@@ -11887,7 +11886,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60206" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60362" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
