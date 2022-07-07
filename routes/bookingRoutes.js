@@ -14,7 +14,8 @@ router
   .post(authController.protect, bookingController.createBooking);
 
 router
-  .route('/:bookingId')
+  .route('/:id')
+  .get(authController.protect, bookingController.getBooking)
   .delete(authController.protect, bookingController.deleteBooking);
 
 module.exports = router;

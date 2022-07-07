@@ -72,7 +72,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteBooking = catchAsync(async (req, res, next) => {
-  const booking = await Booking.findByIdAndDelete(req.params.bookingId);
+  const booking = await Booking.findByIdAndDelete(req.params.id);
   if (!booking) {
     return next(
       new AppError('No booking with this ID found, please try again!', 404)
@@ -82,5 +82,21 @@ exports.deleteBooking = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: null,
+  });
+});
+
+exports.getBooking = catchAsync(async (req, res, next) => {
+  const booking = await Booking.findById(req.params.id);
+  if (!booking) {
+    return next(
+      new AppError('No booking with this ID found, please try again!', 404)
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      booking,
+    },
   });
 });
