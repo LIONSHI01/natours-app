@@ -17,7 +17,6 @@ const bookTourBtn = document.getElementById('book-tour');
 
 // DELEGATION (Prevent error when in pages without Map)
 if (mapBox) {
-  console.log('there is map here!');
   const locations = JSON.parse(mapBox.dataset.locations);
   displayMap(locations);
 }

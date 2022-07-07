@@ -157,7 +157,7 @@ tourSchema.pre('save', function (next) {
 // });
 
 // tourSchema.post('save', function (doc, next) {
-//   console.log(doc);
+
 //   next();
 // });
 
@@ -186,7 +186,7 @@ tourSchema.pre(/^find/, function (next) {
 // Purpose: exclude Secret tour from query
 // tourSchema.pre('aggregate', function (next) {
 //   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-//   console.log(this.pipeline());
+
 //   next();
 // });
 
