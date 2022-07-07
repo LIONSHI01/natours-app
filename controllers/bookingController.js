@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
-// const AppError = require('../utils/appError');
+const AppError = require('../utils/appError');
 
 const catchAsync = require('../utils/catchAsync');
 
@@ -48,4 +48,25 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   await Booking.create({ tour, user, price });
   // Redirect user to overview page after payment
   res.redirect(req.originalUrl.split('?')[0]);
+});
+
+exports.createBooking = catchAsync(async (req, res, next) => {
+  const tour = Tour.findById(req.params.tourId);
+  if (!tour) {
+    return next(
+      new AppError('There is no tour with this ID! Please try again.', 404)
+    );
+  }
+  const booking = Booking.create({
+    tour: tour.id,
+    user: req.user.id,
+    price: tour.price,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      booking,
+    },
+  });
 });

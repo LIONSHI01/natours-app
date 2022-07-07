@@ -9,4 +9,8 @@ router.get(
   bookingController.getCheckoutSession
 );
 
+router
+  .route('/create-booking/:tourId')
+  .post(authController.protect, bookingController.createBooking);
+
 module.exports = router;
