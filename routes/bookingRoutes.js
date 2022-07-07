@@ -13,4 +13,8 @@ router
   .route('/create-booking/:tourId')
   .post(authController.protect, bookingController.createBooking);
 
+router
+  .route('/:bookingId')
+  .delete(authController.protect, bookingController.deleteBooking);
+
 module.exports = router;

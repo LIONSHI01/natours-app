@@ -51,13 +51,13 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 });
 
 exports.createBooking = catchAsync(async (req, res, next) => {
-  const tour = Tour.findById(req.params.tourId);
+  const tour = await Tour.findById(req.params.tourId);
   if (!tour) {
     return next(
       new AppError('There is no tour with this ID! Please try again.', 404)
     );
   }
-  const booking = Booking.create({
+  const newBooking = await Booking.create({
     tour: tour.id,
     user: req.user.id,
     price: tour.price,
@@ -66,7 +66,21 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: {
-      booking,
+      newBooking,
     },
+  });
+});
+
+exports.deleteBooking = catchAsync(async (req, res, next) => {
+  const booking = await Booking.findByIdAndDelete(req.params.bookingId);
+  if (!booking) {
+    return next(
+      new AppError('No booking with this ID found, please try again!', 404)
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: null,
   });
 });
