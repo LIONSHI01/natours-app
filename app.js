@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -27,6 +28,11 @@ app.set('view engine', 'pug');
 app.set('veiws', path.join(__dirname, 'views')); // use path Library for better document directory
 
 // 1) GLOBAL MIDDLEWARE
+// Implement CORS
+// A) Allow simple request: GET
+app.use(cors());
+// Allow complex request: POST, PATCH, DELETE etc
+app.options('*', cors());
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 // KEYNOTE :(!!!ORDER matters) Create Middleware function to response request,Without specify Routing, it response to every request
