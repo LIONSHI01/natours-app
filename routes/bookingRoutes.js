@@ -3,20 +3,21 @@ const authController = require('../controllers/authController');
 const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
-router.get(
-  '/checkout-session/:tourId',
-  authController.protect,
-  bookingController.getCheckoutSession
-);
 
+router.use(authController.protect);
+router.get('/checkout-session/:tourId', bookingController.getCheckoutSession);
+
+// Restrict to Admin and Lead-guid to access
+router.use(authController.restrictTo('admin', 'lead-guide'));
 router
-  .route('/create-booking/:tourId')
-  .post(authController.protect, bookingController.createBooking);
+  .route('/')
+  .get(bookingController.getAll)
+  .post(bookingController.createBooking);
 
 router
   .route('/:id')
-  .get(authController.protect, bookingController.getBooking)
-  .patch(authController.protect, bookingController.updateBooking)
-  .delete(authController.protect, bookingController.deleteBooking);
+  .get(bookingController.getBooking)
+  .patch(bookingController.updateBooking)
+  .delete(bookingController.deleteBooking);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
+const factory = require('../controllers/handlerFactory');
 const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
 const AppError = require('../utils/appError');
@@ -50,78 +50,8 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   res.redirect(req.originalUrl.split('?')[0]);
 });
 
-exports.createBooking = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId);
-  if (!tour) {
-    return next(
-      new AppError('There is no tour with this ID! Please try again.', 404)
-    );
-  }
-  const newBooking = await Booking.create({
-    tour: tour.id,
-    user: req.user.id,
-    price: tour.price,
-  });
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      newBooking,
-    },
-  });
-});
-
-exports.deleteBooking = catchAsync(async (req, res, next) => {
-  const booking = await Booking.findByIdAndDelete(req.params.id);
-  if (!booking) {
-    return next(
-      new AppError('No booking with this ID found, please try again!', 404)
-    );
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: null,
-  });
-});
-
-exports.getBooking = catchAsync(async (req, res, next) => {
-  const booking = await Booking.findById(req.params.id);
-  if (!booking) {
-    return next(
-      new AppError('No booking with this ID found, please try again!', 404)
-    );
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      booking,
-    },
-  });
-});
-
-exports.updateBooking = catchAsync(async (req, res, next) => {
-  if (!req.body.tour) {
-    return next(
-      new AppError('You can only update tour ID, please try again!', 404)
-    );
-  }
-
-  const booking = await Booking.findByIdAndUpdate(req.params.id, {
-    tour: req.body.tour,
-  });
-
-  if (!booking) {
-    return next(
-      new AppError('No booking with this ID found, please try again!', 404)
-    );
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      booking,
-    },
-  });
-});
+exports.createBooking = factory.createOne(Booking);
+exports.getBooking = factory.getOne(Booking);
+exports.getAll = factory.getAll(Booking);
+exports.updateBooking = factory.updateOne(Booking);
+exports.deleteBooking = factory.deleteOne(Booking);
