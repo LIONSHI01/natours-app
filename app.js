@@ -19,6 +19,9 @@ const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
+// NOTE: For website cookies secure sending in Heroku
+app.enable('trust proxy');
+
 // KEYNOTE: Set up Render Engine
 app.set('view engine', 'pug');
 app.set('veiws', path.join(__dirname, 'views')); // use path Library for better document directory

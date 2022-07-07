@@ -42,3 +42,11 @@ process.on('unhandledRejection', (err) => {
     process.exit(1); // 1 = Uncaught Exception , 0 = Success
   });
 });
+
+// Handle Heroku Shutting down every 24 hr
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECEIVED. Shutting down gracefully :)');
+  server.close(() => {
+    console.log('Process terminated! :)');
+  });
+});
