@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
-const AppError = require('../utils/appError');
+// const AppError = require('../utils/appError');
 
 const catchAsync = require('../utils/catchAsync');
 
@@ -44,6 +44,8 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   const { tour, user, price } = req.query;
   if (!tour && !user && !price) return next();
 
+  // If query specify tour,user, price, then create new booking
   await Booking.create({ tour, user, price });
-  res.redirect(req.originalUlr.split('?')[0]);
+  // Redirect user to overview page after payment
+  res.redirect(req.originalUrl.split('?')[0]);
 });
