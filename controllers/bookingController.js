@@ -100,3 +100,28 @@ exports.getBooking = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.updateBooking = catchAsync(async (req, res, next) => {
+  if (!req.body.tour) {
+    return next(
+      new AppError('You can only update tour ID, please try again!', 404)
+    );
+  }
+
+  const booking = await Booking.findByIdAndUpdate(req.params.id, {
+    tour: req.body.tour,
+  });
+
+  if (!booking) {
+    return next(
+      new AppError('No booking with this ID found, please try again!', 404)
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      booking,
+    },
+  });
+});
