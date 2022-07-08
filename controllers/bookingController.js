@@ -60,14 +60,14 @@ const createBookingCheckout = async (session) => {
 
 // KEYNOTE: Controller for Stripe Checkout
 exports.webhookCheckout = (req, res, next) => {
-  const signature = req.headers('stripe-signature');
+  const signature = req.headers['stripe-signature'];
 
   //NOTE: 1) signature + stripe-webhook-secret validate the req.body => security
   // 2) Since validation may cause error, so add try/catch
   // 3) Return error response to Stripe
   let event;
   try {
-    event = stripe.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent[
       req.body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
