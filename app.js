@@ -16,6 +16,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./controllers/bookingController');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
@@ -64,6 +65,15 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!',
 });
 app.use('/api', limiter); // apply limiter to URL start with '/api'
+
+// KEYNOTE: For Stripe Checkout session
+// 1) Stripe POST a raw format data
+// 2) Place in app.js and before app.use(express.json()): Prevent app.use(express.json()) convert the req.body from Stripe to JSON
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
 
 // Body parser, reading data from body into req.body
 // KEYNOTE: use Middleware to read POST JSON data from Clients
