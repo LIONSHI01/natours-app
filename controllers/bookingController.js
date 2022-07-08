@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const factory = require('../controllers/handlerFactory');
+const factory = require('./handlerFactory');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
@@ -25,7 +25,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: tour.summary,
-        images: [`${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`],
+        images: [
+          `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`,
+        ],
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1,
@@ -67,7 +69,7 @@ exports.webhookCheckout = (req, res, next) => {
   // 3) Return error response to Stripe
   let event;
   try {
-    event = stripe.webhooks.constructEvent[
+    event = stripe.webhooks.constructEvent(
       req.body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
