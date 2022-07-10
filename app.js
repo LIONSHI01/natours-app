@@ -26,7 +26,7 @@ app.enable('trust proxy');
 
 // KEYNOTE: Set up Render Engine
 app.set('view engine', 'pug');
-app.set('veiws', path.join(__dirname, 'views')); // use path Library for better document directory
+app.set('veiws', path.join(__dirname, 'views')); // use path Library for better document directory performance on different Operating Systems
 
 // 1) GLOBAL MIDDLEWARE
 // Implement CORS

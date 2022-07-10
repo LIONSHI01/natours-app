@@ -190,6 +190,6 @@ tourSchema.pre(/^find/, function (next) {
 //   next();
 // });
 
+// NOTE: PLACE AFTER ALL MIDDLEWARE
 const Tour = mongoose.model('Tour', tourSchema);
-
 module.exports = Tour;

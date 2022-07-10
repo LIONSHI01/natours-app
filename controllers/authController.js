@@ -40,7 +40,6 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  // const newUser = await User.create(req.body);
   // KEYNOTE: Prevent user register to be an Admin as we select info we need instead of let user input their role in the req.body
   const newUser = await User.create({
     name: req.body.name,
@@ -48,7 +47,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
-    role: req.body.role,
+    // role: req.body.role, // Should not let users assign their role
   });
 
   // Send Welcome EMAIL

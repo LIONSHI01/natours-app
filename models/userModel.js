@@ -60,8 +60,8 @@ const userSchema = new mongoose.Schema({
 
 // KEYNOTE: Encrypt the password (NOTE: .update() NOT work!!)
 userSchema.pre('save', async function (next) {
-  // NOTE: Only run this function if password was actually modified
-  // if password not modified, no need to encrypt
+  // NOTE: Only run this function if password was actually modified/newly created
+  // if user just update Name or email , no need to run this function
   if (!this.isModified('password')) return next();
 
   // bcrypt.hash(<data_to_encrypted>, <how_strong_to_encrypt>), with cost of 12 is common
@@ -82,7 +82,7 @@ userSchema.pre('save', function (next) {
 });
 
 // NOTE:Query Middleware, for all query start with 'find', only return {active:not equal to false}(in case some early user data dont have 'active' property)
-userSchema.pre('/^find/', function (next) {
+userSchema.pre(/^find/, function (next) {
   // this point to the current query
   this.find({ active: { $ne: false } });
   next();
@@ -102,7 +102,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
       this.passwordChangedAt.getTime() / 1000,
       10
     );
-    return JWTTimestamp < changedTimestamp; //token isssued tiem early than password change time = Password changed
+    return JWTTimestamp < changedTimestamp; //token isssued time early than password change time = Password changed
   }
 
   // false = password NOT changes
