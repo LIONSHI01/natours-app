@@ -29,7 +29,6 @@ exports.uploadTourImages = upload.fields([
 
 // B) Middleware to RESIZE images
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
-
   if (!req.files.imageCover || !req.files.images) return next();
 
   // 1) Process Cover image
@@ -158,7 +157,7 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.gettoursWithin = catchAsync(async (req, res, next) => {
+exports.getToursWithin = catchAsync(async (req, res, next) => {
   const { distance, latlng, unit } = req.params;
   const [lat, lng] = latlng.split(',');
 

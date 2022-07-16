@@ -3,7 +3,6 @@ const factory = require('./handlerFactory');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
-
 const catchAsync = require('../utils/catchAsync');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
@@ -20,7 +19,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     success_url: `${req.protocol}://${req.get('host')}/my-tours?alert=booking`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
-    client_reference_id: req.params.tourId,
+    client_reference_id: req.params.tourId, // use TourId for later creating booking record in MongoDB
     line_items: [
       {
         name: `${tour.name} Tour`,
@@ -45,7 +44,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 // exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 //   // This is only TEMPORARY , because it's UNSECURE: everyone can make booking without paying
 //   const { tour, user, price } = req.query;
-//   if (!tour && !user && !price) return next();
+//   if (!tour || !user || !price) return next();
 
 //   // If query specify tour,user, price, then create new booking
 //   await Booking.create({ tour, user, price });
@@ -82,6 +81,7 @@ exports.webhookCheckout = (req, res, next) => {
 
   res.status(200).json({ received: true });
 };
+
 exports.createBooking = factory.createOne(Booking);
 exports.getBooking = factory.getOne(Booking);
 exports.getAll = factory.getAll(Booking);

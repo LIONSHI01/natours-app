@@ -21,10 +21,11 @@ const createSendToken = (user, statusCode, req, res) => {
     ),
     httpOnly: true,
     // Specific for Heroku setting
-    //secure = true => Only send this cookie via HTTPS
+    //secure = true => Only send this cookie via HTTPS(an encrypted connection)
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   };
 
+  // Send jwt to browser for auto-save and future request use
   res.cookie('jwt', token, cookieOptions);
 
   //REMOVE password from OUTPUT
@@ -133,6 +134,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 // NOTE: Function to check if the user is logged-in, only for Render pages
+// NOT use catchAsync: if user loggout out, their jwt token is invalid for jwt.verify which will cause global error in catchAsync, so we use try-catch here
 exports.isLoggedIn = async (req, res, next) => {
   try {
     // 1) Check if there is a cookie called jwt
@@ -154,7 +156,8 @@ exports.isLoggedIn = async (req, res, next) => {
       if (currentUser.changedPasswordAfter(decoded.iat)) return next();
 
       // There is a Logged in user
-      // KEYNOTE: Put currentUser to the res.locals
+      // KEYNOTE: Put currentUser to the res.locals, pug template can access to res.locals to find if user property exist => for rendering
+
       res.locals.user = currentUser;
 
       return next();

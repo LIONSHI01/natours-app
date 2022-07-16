@@ -8,9 +8,11 @@ const router = express.Router();
 router.use(viewController.alerts);
 
 router.get('/', authController.isLoggedIn, viewController.getOverview);
+
 router
   .route('/tour/:slug')
   .get(authController.isLoggedIn, viewController.getTour);
+
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
 
 // ACCOUNT PAGE

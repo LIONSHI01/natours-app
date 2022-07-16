@@ -22,7 +22,7 @@ router.route('/monthly-plan/:year').get(
 
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
-  .get(tourController.gettoursWithin);
+  .get(tourController.getToursWithin);
 
 router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances);
 

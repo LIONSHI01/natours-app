@@ -88,9 +88,10 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 };
 
 // Call the Aggregation Pipeline after new reviews saved
-// Use .post but not .pre, coz we calculate after saving the review data
+// Use .post but NOT .pre, coz we calculate after saving the review data
 reviewSchema.post('save', function () {
   // this points to current review
+  // no next() for post middle-ware
   // NOTE: this.constructor = Review , coz 'this' point to the current review instance, its constructor is Review
   this.constructor.calcAverageRatings(this.tour); // put in current review's tourId
 });
@@ -99,13 +100,16 @@ reviewSchema.post('save', function () {
 // 1) Get the tourID via .pre query (Can't get tourID after query execution)
 // NOTE: Regrex find .findOneAndUpdate/ .findOneAndDelete orders
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.findOne(); //.findOne is a function of Model, here is to retrieve current Document from database
+  this.r = await this.findOne();
+  //.findOne is a function of Model, here is to retrieve current Document from database, document saved as this.r, so can pass to later post middle-ware
   next();
 });
 
 // 2) Save the calculation results after query
-reviewSchema.post(/^findOneAnd/, async function (next) {
+reviewSchema.post(/^findOneAnd/, async function () {
   // await this.findOne() does NOT work here, query has already executed
+  // need to call the Model's statics function
+  // this.r.tour passed from above pre middle-ware
   await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 

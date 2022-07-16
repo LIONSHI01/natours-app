@@ -37,6 +37,7 @@ exports.uploadUserPhoto = upload.single('photo');
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
+  // Set up photo file name
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
   // 500*500 = square img
@@ -90,6 +91,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   // 2) Update user document
   // Filtered out unwanted fields name that are not allowed to be updated,eg. 'role', 'token' etc
   const filteredBody = filterObj(req.body, 'name', 'email');
+  // update user photo in db
   if (req.file) filteredBody.photo = req.file.filename;
 
   // 3) Update user document

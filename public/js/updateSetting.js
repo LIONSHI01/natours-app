@@ -2,24 +2,6 @@
 import axios from 'axios';
 import { showAlert } from './alerts';
 
-// export const updateData = async (name, email) => {
-//   try {
-//     const result = await axios({
-//       method: 'PATCH',
-//       url: '/api/v1/users/updateMe',
-//       data: {
-//         name,
-//         email,
-//       },
-//     });
-//     if (result.data.status === 'success') {
-//       showAlert('success', 'User info updated successfully!');
-//     }
-//   } catch (err) {
-//     showAlert('error', err.response.data.message);
-//   }
-// };
-
 export const updateUserPassword = async (
   passwordCurrent,
   password,
