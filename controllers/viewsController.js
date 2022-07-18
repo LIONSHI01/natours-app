@@ -4,7 +4,7 @@ const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
-// KEYNOTE: Add Alert to Success payment page with use of req.locals
+// KEYNOTE: Add Alert to Success payment page with use of res.locals
 exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking')
